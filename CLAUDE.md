@@ -89,10 +89,11 @@ Components should NOT be exported from `src/index.ts`. Instead:
 
 ### Storybook
 
-- Storybook 8 is configured for web components using Vite
+- Storybook 9 is configured for web components using Vite
 - Stories use vanilla JavaScript/TypeScript (no Lit dependency) - components are created using `document.createElement()`
 - Configuration files in `.storybook/`:
-  - `main.ts` - Main Storybook configuration
+  - `main.ts` - Main Storybook configuration (addons moved to core in v9)
   - `preview.ts` - Initializes Stencil components via the loader
+- MDX files use `export const meta = { title: '...' }` instead of `<Meta>` component
 - Run `npm run build` first to generate the loader before running Storybook
 - Storybook runs on http://localhost:6006
