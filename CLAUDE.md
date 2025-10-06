@@ -112,5 +112,13 @@ Components should NOT be exported from `src/index.ts`. Instead:
   - 180 character line width
   - 2-space indentation
 - Files ignored via `.prettierignore` (dist/, node_modules/, generated files)
-- Run `npm run format` before committing changes
-- CI/CD should run `npm run format:check` to verify formatting
+- Formatting is automatically applied via pre-commit hook (see Git Hooks below)
+
+### Git Hooks
+
+- Husky 9 manages Git hooks
+- **Pre-commit hook** (`.husky/pre-commit`):
+  1. Runs `lint-staged` to format only staged files with Prettier
+  2. Automatically re-stages formatted files
+  3. Runs `npm test` - commit is aborted if tests fail
+- Hooks are automatically installed when running `npm install` (via `prepare` script)
