@@ -40,15 +40,23 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "format": "prettier --write \"src/**/*.{ts,tsx,css,md,json}\" \"*.{json,md}\" \".storybook/**/*.{ts,js}\"",
-    "format:check": "prettier --check \"src/**/*.{ts,tsx,css,md,json}\" \"*.{json,md}\" \".storybook/**/*.{ts,js}\""
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,css,md,json}\" \"*.{json,md}\" \".storybook/**/*.{ts,js}\"",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,css,md,json}": [
+      "prettier --write"
+    ]
   },
   "devDependencies": {
     "@stencil/core": "^4.27.1",
     "@storybook/web-components-vite": "^9.1.10",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.13.5",
+    "husky": "^9.1.7",
     "jest": "^29.7.0",
     "jest-cli": "^29.7.0",
+    "lint-staged": "^16.2.3",
     "prettier": "^3.6.2",
     "puppeteer": "^24.3.0",
     "storybook": "^9.1.10",

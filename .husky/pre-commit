@@ -1,0 +1,6 @@
+#!/bin/sh
+# Run lint-staged to format staged files and re-add them
+npx lint-staged
+
+# Run tests - if they fail, the commit will be aborted
+npm test
