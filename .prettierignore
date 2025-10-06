@@ -1,0 +1,21 @@
+# Build outputs
+dist/
+loader/
+www/
+.stencil/
+storybook-static/
+
+# Dependencies
+node_modules/
+
+# Generated files
+src/components.d.ts
+
+# Logs
+*.log
+
+# Lock files
+package-lock.json
+
+# Coverage
+coverage/

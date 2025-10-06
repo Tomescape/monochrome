@@ -20,7 +20,7 @@ export const Default: Story = {
     middle: "'Don't call me a framework'",
     last: 'JS',
   },
-  render: (args) => {
+  render: args => {
     const component = document.createElement('my-component');
     component.setAttribute('first', args.first);
     component.setAttribute('middle', args.middle);
@@ -35,7 +35,7 @@ export const Simple: Story = {
     middle: 'D.',
     last: 'Doe',
   },
-  render: (args) => {
+  render: args => {
     const component = document.createElement('my-component');
     component.setAttribute('first', args.first);
     component.setAttribute('middle', args.middle);
@@ -50,7 +50,7 @@ export const OnlyFirstAndLast: Story = {
     middle: '',
     last: 'Smith',
   },
-  render: (args) => {
+  render: args => {
     const component = document.createElement('my-component');
     component.setAttribute('first', args.first);
     component.setAttribute('middle', args.middle);

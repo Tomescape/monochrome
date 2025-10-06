@@ -32,6 +32,12 @@ npm run storybook
 
 # Build Storybook for production
 npm run build-storybook
+
+# Format code with Prettier
+npm run format
+
+# Check formatting without modifying files
+npm run format:check
 ```
 
 ## Architecture
@@ -94,6 +100,17 @@ Components should NOT be exported from `src/index.ts`. Instead:
 - Configuration files in `.storybook/`:
   - `main.ts` - Main Storybook configuration (addons moved to core in v9)
   - `preview.ts` - Initializes Stencil components via the loader
-- MDX files use `export const meta = { title: '...' }` instead of `<Meta>` component
+- MDX documentation pages were removed due to v9 compatibility issues - use autodocs in stories instead
 - Run `npm run build` first to generate the loader before running Storybook
 - Storybook runs on http://localhost:6006
+
+### Code Formatting
+
+- Prettier 3 is installed for code formatting
+- Configuration in `.prettierrc.json`:
+  - Single quotes, semicolons, trailing commas
+  - 180 character line width
+  - 2-space indentation
+- Files ignored via `.prettierignore` (dist/, node_modules/, generated files)
+- Run `npm run format` before committing changes
+- CI/CD should run `npm run format:check` to verify formatting
