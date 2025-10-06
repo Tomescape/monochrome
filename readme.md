@@ -39,6 +39,24 @@ To run the unit tests for the components, run:
 npm test
 ```
 
+## Storybook
+
+This project includes Storybook for component development and documentation. To run Storybook:
+
+```bash
+npm run storybook
+```
+
+This will start Storybook on [http://localhost:6006](http://localhost:6006).
+
+To build Storybook for production:
+
+```bash
+npm run build-storybook
+```
+
+Stories are located alongside components in `*.stories.ts` files.
+
 Need help? Check out our docs [here](https://stenciljs.com/docs/my-first-component).
 
 ## Naming Components
