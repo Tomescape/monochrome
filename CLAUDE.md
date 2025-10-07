@@ -38,6 +38,9 @@ npm run format
 
 # Check formatting without modifying files
 npm run format:check
+
+# Analyze code complexity with FTA
+npm run fta
 ```
 
 ## Architecture
@@ -121,4 +124,15 @@ Components should NOT be exported from `src/index.ts`. Instead:
   1. Runs `lint-staged` to format only staged files with Prettier
   2. Automatically re-stages formatted files
   3. Runs `npm test` - commit is aborted if tests fail
+  4. Runs `npm run fta` - commit is aborted if code complexity exceeds threshold (default: 1000)
 - Hooks are automatically installed when running `npm install` (via `prepare` script)
+
+### Code Analysis
+
+- FTA (Fast TypeScript Analyzer) 3 is installed for code complexity analysis
+- Configuration in `fta.json`:
+  - Excludes test files (`*.e2e.ts`, `*.spec.ts`, `*.stories.ts`)
+  - Excludes type definition files (`*.d.ts`)
+  - Analyzes all source files including very small files (`exclude_under: 0`)
+- Run `npm run fta` to analyze code complexity and maintainability
+- FTA provides scores for each file (lower is better) with assessments: OK, Could be better, Needs improvement

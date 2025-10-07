@@ -4,3 +4,6 @@ npx lint-staged
 
 # Run tests - if they fail, the commit will be aborted
 npm test
+
+# Run FTA code analysis - if complexity is too high, the commit will be aborted
+npm run fta

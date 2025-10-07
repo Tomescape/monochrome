@@ -41,6 +41,7 @@
     "build-storybook": "storybook build",
     "format": "prettier --write \"src/**/*.{ts,tsx,css,md,json}\" \"*.{json,md}\" \".storybook/**/*.{ts,js}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css,md,json}\" \"*.{json,md}\" \".storybook/**/*.{ts,js}\"",
+    "fta": "fta .",
     "prepare": "husky"
   },
   "lint-staged": {
@@ -53,6 +54,7 @@
     "@storybook/web-components-vite": "^9.1.10",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.13.5",
+    "fta-cli": "^3.0.0",
     "husky": "^9.1.7",
     "jest": "^29.7.0",
     "jest-cli": "^29.7.0",

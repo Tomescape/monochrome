@@ -1,0 +1,5 @@
+{
+  "exclude_filenames": ["*.e2e.ts", "*.spec.ts", "*.stories.ts", "*.d.ts"],
+  "exclude_directories": [".storybook", "dist", "loader", "node_modules", "www"],
+  "exclude_under": 0
+}

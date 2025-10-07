@@ -49,6 +49,19 @@ npm test
 - Executes Jest test suite
 - **Aborts the commit if any test fails**
 
+### Step 3: Analyze Code Complexity
+
+```bash
+npm run fta
+```
+
+**What it does:**
+
+- Runs FTA (Fast TypeScript Analyzer) on all source files
+- Analyzes code complexity and maintainability
+- Provides scores for each file (lower is better)
+- **Aborts the commit if any file exceeds the complexity threshold** (default: 1000)
+
 ## Configuration Files
 
 ### `.husky/pre-commit`
@@ -60,6 +73,9 @@ npx lint-staged
 
 # Run tests - if they fail, the commit will be aborted
 npm test
+
+# Run FTA code analysis - if complexity is too high, the commit will be aborted
+npm run fta
 ```
 
 ### `package.json` (lint-staged config)
@@ -106,8 +122,9 @@ git commit -m "Add new feature"
 # Hook runs:
 # 1. Prettier formats my-component.tsx (if needed)
 # 2. File is re-staged with formatting applied
-# 3. Tests run
-# 4. Commit completes if tests pass
+# 3. Tests run and pass
+# 4. FTA analyzes code complexity
+# 5. Commit completes if complexity is acceptable
 ```
 
 ### Scenario 2: Test Failure
@@ -182,13 +199,34 @@ Then create `.husky/pre-push` for e2e tests:
 npm run test -- --e2e
 ```
 
+### FTA Score Too High
+
+If FTA fails due to high complexity:
+
+```bash
+# Commit fails with FTA error
+# Refactor the code to reduce complexity
+# Common fixes:
+# - Break down large functions
+# - Reduce nesting levels
+# - Extract complex logic into separate functions
+# - Simplify conditional statements
+```
+
+To temporarily bypass (not recommended):
+
+```bash
+git commit --no-verify -m "message"
+```
+
 ## Benefits
 
 1. **Consistent Formatting** - All commits have properly formatted code
 2. **No Test Regressions** - Failing tests prevent broken code from being committed
-3. **Automatic** - No need to remember to format or test
-4. **Fast** - lint-staged only processes changed files
-5. **Team Consistency** - Same checks for all developers
+3. **Code Quality** - High complexity code is flagged before commit
+4. **Automatic** - No need to remember to format, test, or analyze
+5. **Fast** - lint-staged only processes changed files
+6. **Team Consistency** - Same checks for all developers
 
 ## Related Files
 
@@ -196,3 +234,4 @@ npm run test -- --e2e
 - `package.json` - lint-staged configuration and prepare script
 - `.prettierrc.json` - Prettier formatting rules
 - `.prettierignore` - Files excluded from formatting
+- `fta.json` - FTA code analysis configuration
