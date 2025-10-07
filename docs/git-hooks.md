@@ -219,7 +219,7 @@ To temporarily bypass (not recommended):
 git commit --no-verify -m "message"
 ```
 
-It should be possible to revert to any commit in a respository's git history and have it successfully and deploy. Hence, bypassing the checks is discouraged.
+It should be possible to revert to any commit in a respository's git history and have it successfully build and deploy. Hence, bypassing the checks is discouraged.
 
 ## Benefits
 
