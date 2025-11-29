@@ -1,0 +1,247 @@
+:host {
+  /* Color tokens */
+  --mono-text-field-label-color: #333333;
+  --mono-text-field-input-bg: #ffffff;
+  --mono-text-field-input-border: #cccccc;
+  --mono-text-field-input-text: #333333;
+  --mono-text-field-placeholder-color: #999999;
+  --mono-text-field-focus-border: #0066cc;
+  --mono-text-field-focus-shadow: rgba(0, 102, 204, 0.2);
+  --mono-text-field-error-color: #dc3545;
+  --mono-text-field-error-bg: #fff5f5;
+  --mono-text-field-error-border: #dc3545;
+  --mono-text-field-disabled-bg: #f5f5f5;
+  --mono-text-field-disabled-text: #999999;
+  --mono-text-field-disabled-border: #e0e0e0;
+  --mono-text-field-required-color: #dc3545;
+
+  /* Spacing tokens */
+  --mono-text-field-label-margin: 0.5rem;
+  --mono-text-field-error-margin: 0.25rem;
+  --mono-text-field-padding-small: 0.5rem 0.75rem;
+  --mono-text-field-padding-medium: 0.75rem 1rem;
+  --mono-text-field-padding-large: 1rem 1.25rem;
+
+  /* Typography tokens */
+  --mono-text-field-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --mono-text-field-font-size-small: 0.875rem;
+  --mono-text-field-font-size-medium: 1rem;
+  --mono-text-field-font-size-large: 1.125rem;
+  --mono-text-field-label-font-size: 0.875rem;
+  --mono-text-field-label-font-weight: 500;
+  --mono-text-field-error-font-size: 0.875rem;
+
+  /* Border tokens */
+  --mono-text-field-border-width: 1px;
+  --mono-text-field-border-radius: 0.25rem;
+  --mono-text-field-focus-border-width: 2px;
+
+  /* Animation tokens */
+  --mono-text-field-transition: all 0.2s ease-in-out;
+
+  /* Size tokens */
+  --mono-text-field-height-small: 2rem;
+  --mono-text-field-height-medium: 2.5rem;
+  --mono-text-field-height-large: 3rem;
+
+  display: block;
+  font-family: var(--mono-text-field-font-family);
+}
+
+.text-field {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* Label styles */
+.text-field__label {
+  display: block;
+  margin-bottom: var(--mono-text-field-label-margin);
+  color: var(--mono-text-field-label-color);
+  font-size: var(--mono-text-field-label-font-size);
+  font-weight: var(--mono-text-field-label-font-weight);
+  line-height: 1.5;
+  cursor: pointer;
+  user-select: none;
+}
+
+.text-field__required {
+  color: var(--mono-text-field-required-color);
+  margin-left: 0.25rem;
+}
+
+/* Input wrapper */
+.text-field__input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Input styles */
+.text-field__input {
+  width: 100%;
+  font-family: var(--mono-text-field-font-family);
+  color: var(--mono-text-field-input-text);
+  background-color: var(--mono-text-field-input-bg);
+  border: var(--mono-text-field-border-width) solid var(--mono-text-field-input-border);
+  border-radius: var(--mono-text-field-border-radius);
+  transition: var(--mono-text-field-transition);
+  outline: none;
+  box-sizing: border-box;
+}
+
+.text-field__input::placeholder {
+  color: var(--mono-text-field-placeholder-color);
+  opacity: 1;
+}
+
+/* Size variants */
+.text-field--small .text-field__input {
+  padding: var(--mono-text-field-padding-small);
+  font-size: var(--mono-text-field-font-size-small);
+  height: var(--mono-text-field-height-small);
+  line-height: 1.5;
+}
+
+.text-field--medium .text-field__input {
+  padding: var(--mono-text-field-padding-medium);
+  font-size: var(--mono-text-field-font-size-medium);
+  height: var(--mono-text-field-height-medium);
+  line-height: 1.5;
+}
+
+.text-field--large .text-field__input {
+  padding: var(--mono-text-field-padding-large);
+  font-size: var(--mono-text-field-font-size-large);
+  height: var(--mono-text-field-height-large);
+  line-height: 1.5;
+}
+
+/* Focus state */
+.text-field__input:focus,
+.text-field--focused .text-field__input {
+  border-color: var(--mono-text-field-focus-border);
+  border-width: var(--mono-text-field-focus-border-width);
+  box-shadow: 0 0 0 3px var(--mono-text-field-focus-shadow);
+}
+
+/* Hover state (only when not disabled) */
+.text-field:not(.text-field--disabled) .text-field__input:hover {
+  border-color: var(--mono-text-field-focus-border);
+}
+
+/* Error state */
+.text-field--error .text-field__input {
+  border-color: var(--mono-text-field-error-border);
+  background-color: var(--mono-text-field-error-bg);
+}
+
+.text-field--error .text-field__input:focus,
+.text-field--error.text-field--focused .text-field__input {
+  border-color: var(--mono-text-field-error-border);
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.2);
+}
+
+.text-field--error .text-field__label {
+  color: var(--mono-text-field-error-color);
+}
+
+/* Disabled state */
+.text-field--disabled .text-field__input {
+  background-color: var(--mono-text-field-disabled-bg);
+  color: var(--mono-text-field-disabled-text);
+  border-color: var(--mono-text-field-disabled-border);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.text-field--disabled .text-field__label {
+  color: var(--mono-text-field-disabled-text);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Readonly state */
+.text-field--readonly .text-field__input {
+  background-color: var(--mono-text-field-disabled-bg);
+  cursor: default;
+}
+
+.text-field--readonly .text-field__input:focus,
+.text-field--readonly.text-field--focused .text-field__input {
+  border-color: var(--mono-text-field-input-border);
+  box-shadow: none;
+}
+
+/* Error message */
+.text-field__error {
+  margin-top: var(--mono-text-field-error-margin);
+  color: var(--mono-text-field-error-color);
+  font-size: var(--mono-text-field-error-font-size);
+  line-height: 1.5;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .text-field--large .text-field__input {
+    padding: var(--mono-text-field-padding-medium);
+    font-size: var(--mono-text-field-font-size-medium);
+    height: var(--mono-text-field-height-medium);
+  }
+}
+
+@media (max-width: 480px) {
+  .text-field__label {
+    font-size: 0.8125rem;
+  }
+
+  .text-field--small .text-field__input {
+    font-size: 0.8125rem;
+  }
+
+  .text-field--medium .text-field__input,
+  .text-field--large .text-field__input {
+    font-size: 0.9375rem;
+  }
+
+  .text-field__error {
+    font-size: 0.8125rem;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .text-field__input {
+    border-width: 2px;
+  }
+
+  .text-field__input:focus,
+  .text-field--focused .text-field__input {
+    outline: 2px solid var(--mono-text-field-focus-border);
+    outline-offset: 2px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .text-field__input {
+    transition: none;
+  }
+}
+
+/* Dark mode support (optional - can be customized via CSS variables) */
+@media (prefers-color-scheme: dark) {
+  :host {
+    --mono-text-field-label-color: #e0e0e0;
+    --mono-text-field-input-bg: #2a2a2a;
+    --mono-text-field-input-border: #4a4a4a;
+    --mono-text-field-input-text: #e0e0e0;
+    --mono-text-field-placeholder-color: #888888;
+    --mono-text-field-focus-border: #4d9fff;
+    --mono-text-field-focus-shadow: rgba(77, 159, 255, 0.3);
+    --mono-text-field-error-bg: #3a2626;
+    --mono-text-field-disabled-bg: #1a1a1a;
+    --mono-text-field-disabled-border: #3a3a3a;
+  }
+}

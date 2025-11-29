@@ -5,57 +5,249 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { MonoTextFieldEventDetail, MonoTextFieldSize } from "./components/mono-text-field/mono-text-field";
+export { MonoTextFieldEventDetail, MonoTextFieldSize } from "./components/mono-text-field/mono-text-field";
 export namespace Components {
-    interface MyComponent {
+    /**
+     * A customizable text field component with label, error states, and input masking support.
+     * Supports patterns like phone numbers, dates, SSN, and custom formats.
+     */
+    interface MonoTextField {
         /**
-          * The first name
+          * Whether to always show the mask pattern (even when typing)
+          * @default false
          */
-        "first": string;
+        "alwaysShowMask": boolean;
         /**
-          * The last name
+          * Autocomplete attribute for the input
          */
-        "last": string;
+        "autocomplete"?: string;
         /**
-          * The middle name
+          * Whether the field is disabled
+          * @default false
          */
-        "middle": string;
+        "disabled": boolean;
+        /**
+          * Whether the field is in an error state
+          * @default false
+         */
+        "error": boolean;
+        /**
+          * Error message to display below the field
+         */
+        "errorMessage"?: string;
+        /**
+          * Custom ID for the input element (auto-generated if not provided)
+         */
+        "inputId"?: string;
+        /**
+          * The label text for the text field
+         */
+        "label"?: string;
+        /**
+          * Input mask pattern. Supported characters: - 9: Numeric digit (0-9) - A: Alphabetic character (a-z, A-Z) - *: Alphanumeric (a-z, A-Z, 0-9) - Any other character: Literal (auto-inserted) Example: "(999) 999-9999" for phone numbers
+         */
+        "mask"?: string;
+        /**
+          * Maximum length for the input
+         */
+        "maxlength"?: number;
+        /**
+          * The name attribute for the input element (useful for forms)
+         */
+        "name"?: string;
+        /**
+          * Placeholder text when the field is empty
+         */
+        "placeholder"?: string;
+        /**
+          * Whether the field is readonly
+          * @default false
+         */
+        "readonly": boolean;
+        /**
+          * Whether the field is required
+          * @default false
+         */
+        "required": boolean;
+        /**
+          * Whether to show the mask pattern as placeholder
+          * @default false
+         */
+        "showMask": boolean;
+        /**
+          * Size variant of the text field
+          * @default 'medium'
+         */
+        "size": MonoTextFieldSize;
+        /**
+          * Input type (text, email, password, etc.)
+          * @default 'text'
+         */
+        "type": string;
+        /**
+          * Whether to return unmasked value (without formatting characters)
+          * @default false
+         */
+        "unmask": boolean;
+        /**
+          * The current value of the text field
+          * @default ''
+         */
+        "value": string;
     }
 }
+export interface MonoTextFieldCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLMonoTextFieldElement;
+}
 declare global {
-    interface HTMLMyComponentElement extends Components.MyComponent, HTMLStencilElement {
+    interface HTMLMonoTextFieldElementEventMap {
+        "monoInput": MonoTextFieldEventDetail;
+        "monoChange": MonoTextFieldEventDetail;
+        "monoFocus": MonoTextFieldEventDetail;
+        "monoBlur": MonoTextFieldEventDetail;
     }
-    var HTMLMyComponentElement: {
-        prototype: HTMLMyComponentElement;
-        new (): HTMLMyComponentElement;
+    /**
+     * A customizable text field component with label, error states, and input masking support.
+     * Supports patterns like phone numbers, dates, SSN, and custom formats.
+     */
+    interface HTMLMonoTextFieldElement extends Components.MonoTextField, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLMonoTextFieldElementEventMap>(type: K, listener: (this: HTMLMonoTextFieldElement, ev: MonoTextFieldCustomEvent<HTMLMonoTextFieldElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLMonoTextFieldElementEventMap>(type: K, listener: (this: HTMLMonoTextFieldElement, ev: MonoTextFieldCustomEvent<HTMLMonoTextFieldElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLMonoTextFieldElement: {
+        prototype: HTMLMonoTextFieldElement;
+        new (): HTMLMonoTextFieldElement;
     };
     interface HTMLElementTagNameMap {
-        "my-component": HTMLMyComponentElement;
+        "mono-text-field": HTMLMonoTextFieldElement;
     }
 }
 declare namespace LocalJSX {
-    interface MyComponent {
+    /**
+     * A customizable text field component with label, error states, and input masking support.
+     * Supports patterns like phone numbers, dates, SSN, and custom formats.
+     */
+    interface MonoTextField {
         /**
-          * The first name
+          * Whether to always show the mask pattern (even when typing)
+          * @default false
          */
-        "first"?: string;
+        "alwaysShowMask"?: boolean;
         /**
-          * The last name
+          * Autocomplete attribute for the input
          */
-        "last"?: string;
+        "autocomplete"?: string;
         /**
-          * The middle name
+          * Whether the field is disabled
+          * @default false
          */
-        "middle"?: string;
+        "disabled"?: boolean;
+        /**
+          * Whether the field is in an error state
+          * @default false
+         */
+        "error"?: boolean;
+        /**
+          * Error message to display below the field
+         */
+        "errorMessage"?: string;
+        /**
+          * Custom ID for the input element (auto-generated if not provided)
+         */
+        "inputId"?: string;
+        /**
+          * The label text for the text field
+         */
+        "label"?: string;
+        /**
+          * Input mask pattern. Supported characters: - 9: Numeric digit (0-9) - A: Alphabetic character (a-z, A-Z) - *: Alphanumeric (a-z, A-Z, 0-9) - Any other character: Literal (auto-inserted) Example: "(999) 999-9999" for phone numbers
+         */
+        "mask"?: string;
+        /**
+          * Maximum length for the input
+         */
+        "maxlength"?: number;
+        /**
+          * The name attribute for the input element (useful for forms)
+         */
+        "name"?: string;
+        /**
+          * Emitted when the input loses focus
+         */
+        "onMonoBlur"?: (event: MonoTextFieldCustomEvent<MonoTextFieldEventDetail>) => void;
+        /**
+          * Emitted when the input value changes and loses focus
+         */
+        "onMonoChange"?: (event: MonoTextFieldCustomEvent<MonoTextFieldEventDetail>) => void;
+        /**
+          * Emitted when the input gains focus
+         */
+        "onMonoFocus"?: (event: MonoTextFieldCustomEvent<MonoTextFieldEventDetail>) => void;
+        /**
+          * Emitted when the input value changes
+         */
+        "onMonoInput"?: (event: MonoTextFieldCustomEvent<MonoTextFieldEventDetail>) => void;
+        /**
+          * Placeholder text when the field is empty
+         */
+        "placeholder"?: string;
+        /**
+          * Whether the field is readonly
+          * @default false
+         */
+        "readonly"?: boolean;
+        /**
+          * Whether the field is required
+          * @default false
+         */
+        "required"?: boolean;
+        /**
+          * Whether to show the mask pattern as placeholder
+          * @default false
+         */
+        "showMask"?: boolean;
+        /**
+          * Size variant of the text field
+          * @default 'medium'
+         */
+        "size"?: MonoTextFieldSize;
+        /**
+          * Input type (text, email, password, etc.)
+          * @default 'text'
+         */
+        "type"?: string;
+        /**
+          * Whether to return unmasked value (without formatting characters)
+          * @default false
+         */
+        "unmask"?: boolean;
+        /**
+          * The current value of the text field
+          * @default ''
+         */
+        "value"?: string;
     }
     interface IntrinsicElements {
-        "my-component": MyComponent;
+        "mono-text-field": MonoTextField;
     }
 }
 export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
-            "my-component": LocalJSX.MyComponent & JSXBase.HTMLAttributes<HTMLMyComponentElement>;
+            /**
+             * A customizable text field component with label, error states, and input masking support.
+             * Supports patterns like phone numbers, dates, SSN, and custom formats.
+             */
+            "mono-text-field": LocalJSX.MonoTextField & JSXBase.HTMLAttributes<HTMLMonoTextFieldElement>;
         }
     }
 }
