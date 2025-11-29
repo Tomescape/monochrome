@@ -1,4 +1,5 @@
 import { Component, Host, h, Prop, Event, EventEmitter, State, Watch } from '@stencil/core';
+import * as MaskUtils from './mask-utils';
 
 /**
  * Event detail emitted by mono-text-field events
@@ -158,161 +159,9 @@ export class MonoTextField {
   @Watch('mask')
   handleMaskChange() {
     if (this.mask && this.value) {
-      const masked = this.applyMask(this.value);
+      const masked = MaskUtils.applyMask(this.value, this.mask, this.alwaysShowMask);
       this.value = masked;
     }
-  }
-
-  /**
-   * Apply mask to a raw value
-   */
-  private applyMask(rawValue: string): string {
-    if (!this.mask) return rawValue;
-
-    let maskedValue = '';
-    let rawIndex = 0;
-    let maskIndex = 0;
-
-    // Remove any existing formatting from the raw value
-    const cleanValue = this.unmaskValue(rawValue);
-
-    while (maskIndex < this.mask.length && rawIndex < cleanValue.length) {
-      const maskChar = this.mask[maskIndex];
-      const rawChar = cleanValue[rawIndex];
-
-      if (this.isLiteral(maskChar)) {
-        // Auto-insert literal character
-        maskedValue += maskChar;
-        maskIndex++;
-        // Don't consume raw character if it matches the literal
-        if (rawChar === maskChar) {
-          rawIndex++;
-        }
-      } else if (this.isValidForMask(rawChar, maskChar)) {
-        // Valid character for this mask position
-        maskedValue += rawChar;
-        maskIndex++;
-        rawIndex++;
-      } else {
-        // Invalid character, skip it
-        rawIndex++;
-      }
-    }
-
-    // Add trailing literals after last input character (for better UX)
-    // Only add trailing literals if there's at least some data
-    while (maskIndex < this.mask.length && rawIndex >= cleanValue.length && cleanValue.length > 0) {
-      const maskChar = this.mask[maskIndex];
-      if (this.isLiteral(maskChar)) {
-        maskedValue += maskChar;
-        maskIndex++;
-      } else {
-        break; // Stop at first non-literal
-      }
-    }
-
-    // Handle alwaysShowMask
-    if (this.alwaysShowMask && maskedValue.length < this.mask.length) {
-      const remaining = this.mask.substring(maskedValue.length);
-      maskedValue += remaining.replace(/[9A*]/g, '_');
-    }
-
-    return maskedValue;
-  }
-
-  /**
-   * Remove mask formatting from a value
-   */
-  private unmaskValue(maskedValue: string): string {
-    if (!this.mask) return maskedValue;
-
-    let unmasked = '';
-
-    for (let i = 0; i < maskedValue.length; i++) {
-      const char = maskedValue[i];
-
-      // Check if this character exists in the mask as a literal
-      let isFormattingChar = false;
-      for (let j = 0; j < this.mask.length; j++) {
-        const maskChar = this.mask[j];
-        if (this.isLiteral(maskChar) && char === maskChar) {
-          isFormattingChar = true;
-          break;
-        }
-      }
-
-      // If it's not a formatting character and not a placeholder, include it
-      if (!isFormattingChar && char !== '_') {
-        unmasked += char;
-      }
-    }
-    return unmasked;
-  }
-
-  /**
-   * Check if a mask character is a literal (fixed character)
-   */
-  private isLiteral(maskChar: string): boolean {
-    return maskChar !== '9' && maskChar !== 'A' && maskChar !== '*';
-  }
-
-  /**
-   * Check if a character is valid for a mask position
-   */
-  private isValidForMask(char: string, maskChar: string): boolean {
-    switch (maskChar) {
-      case '9':
-        return /[0-9]/.test(char);
-      case 'A':
-        return /[a-zA-Z]/.test(char);
-      case '*':
-        return /[a-zA-Z0-9]/.test(char);
-      default:
-        return char === maskChar;
-    }
-  }
-
-  /**
-   * Get cursor position after applying mask
-   */
-  private getNewCursorPosition(oldValue: string, newValue: string, oldCursor: number, inputLength: number): number {
-    if (!this.mask) return oldCursor;
-
-    // Count non-literal characters before cursor in old value
-    let nonLiteralsBeforeCursor = 0;
-    for (let i = 0; i < oldCursor && i < oldValue.length; i++) {
-      const maskChar = this.mask[i];
-      if (maskChar && !this.isLiteral(maskChar)) {
-        nonLiteralsBeforeCursor++;
-      }
-    }
-
-    // If user is typing, add 1 for the new character
-    if (inputLength > oldValue.length) {
-      nonLiteralsBeforeCursor++;
-    }
-
-    // Find position in new value with same number of non-literals
-    let count = 0;
-    let position = 0;
-    while (position < newValue.length && count < nonLiteralsBeforeCursor) {
-      const maskChar = this.mask[position];
-      if (maskChar && !this.isLiteral(maskChar)) {
-        count++;
-      }
-      position++;
-    }
-
-    // Skip trailing literals to position cursor after them
-    while (position < newValue.length && position < this.mask.length) {
-      const maskChar = this.mask[position];
-      if (!this.isLiteral(maskChar)) {
-        break;
-      }
-      position++;
-    }
-
-    return position;
   }
 
   /**
@@ -327,8 +176,8 @@ export class MonoTextField {
     const rawValue = input.value;
 
     if (this.mask) {
-      const maskedValue = this.applyMask(rawValue);
-      const unmaskedValue = this.unmaskValue(maskedValue);
+      const maskedValue = MaskUtils.applyMask(rawValue, this.mask, this.alwaysShowMask);
+      const unmaskedValue = MaskUtils.unmaskValue(maskedValue, this.mask);
 
       this.value = maskedValue;
 
@@ -337,7 +186,7 @@ export class MonoTextField {
 
       // Restore cursor position (only if setSelectionRange is available - not in mock DOM)
       if (typeof input.setSelectionRange === 'function') {
-        const newCursor = this.getNewCursorPosition(oldValue, maskedValue, oldCursor, rawValue.length);
+        const newCursor = MaskUtils.getNewCursorPosition(oldValue, maskedValue, oldCursor, rawValue.length, this.mask);
         input.setSelectionRange(newCursor, newCursor);
       }
 
@@ -364,7 +213,7 @@ export class MonoTextField {
 
     const input = event.target as HTMLInputElement;
     const maskedValue = input.value;
-    const unmaskedValue = this.mask ? this.unmaskValue(maskedValue) : maskedValue;
+    const unmaskedValue = this.mask ? MaskUtils.unmaskValue(maskedValue, this.mask) : maskedValue;
 
     this.monoChange.emit({
       value: this.unmask ? unmaskedValue : maskedValue,
@@ -382,7 +231,7 @@ export class MonoTextField {
     this.hasFocus = true;
     const input = event.target as HTMLInputElement;
     const maskedValue = input.value;
-    const unmaskedValue = this.mask ? this.unmaskValue(maskedValue) : maskedValue;
+    const unmaskedValue = this.mask ? MaskUtils.unmaskValue(maskedValue, this.mask) : maskedValue;
 
     this.monoFocus.emit({
       value: this.unmask ? unmaskedValue : maskedValue,
@@ -400,7 +249,7 @@ export class MonoTextField {
     this.hasFocus = false;
     const input = event.target as HTMLInputElement;
     const maskedValue = input.value;
-    const unmaskedValue = this.mask ? this.unmaskValue(maskedValue) : maskedValue;
+    const unmaskedValue = this.mask ? MaskUtils.unmaskValue(maskedValue, this.mask) : maskedValue;
 
     this.monoBlur.emit({
       value: this.unmask ? unmaskedValue : maskedValue,
@@ -428,18 +277,18 @@ export class MonoTextField {
     const rawValue = beforeCursor + pastedText + afterCursor;
 
     // Apply mask to the combined value
-    const maskedValue = this.applyMask(rawValue);
+    const maskedValue = MaskUtils.applyMask(rawValue, this.mask, this.alwaysShowMask);
     this.value = maskedValue;
     input.value = maskedValue;
 
     // Position cursor after pasted content (only if setSelectionRange is available - not in mock DOM)
     if (typeof input.setSelectionRange === 'function') {
-      const newCursor = this.getNewCursorPosition(currentValue, maskedValue, start, start + pastedText.length);
+      const newCursor = MaskUtils.getNewCursorPosition(currentValue, maskedValue, start, start + pastedText.length, this.mask);
       input.setSelectionRange(newCursor, newCursor);
     }
 
     // Emit input event
-    const unmaskedValue = this.unmaskValue(maskedValue);
+    const unmaskedValue = MaskUtils.unmaskValue(maskedValue, this.mask);
     this.monoInput.emit({
       value: this.unmask ? unmaskedValue : maskedValue,
       maskedValue,
@@ -459,81 +308,24 @@ export class MonoTextField {
       const cursorPos = input.selectionStart || 0;
       const selectionEnd = input.selectionEnd || 0;
 
-      // If there's a selection, let the default behavior delete it
-      if (cursorPos !== selectionEnd) {
-        return;
-      }
+      const result = MaskUtils.handleBackspaceWithMask(this.value, cursorPos, selectionEnd, this.mask);
 
-      // If cursor is at position 0, nothing to delete
-      if (cursorPos === 0) {
-        return;
-      }
+      if (result) {
+        event.preventDefault();
 
-      event.preventDefault();
-
-      const currentValue = this.value;
-      let deletePosition = cursorPos - 1;
-
-      // Find the position of the character to delete (skip literals)
-      while (deletePosition >= 0 && this.mask && deletePosition < this.mask.length) {
-        const maskChar = this.mask[deletePosition];
-        if (!this.isLiteral(maskChar)) {
-          // Found a non-literal position, delete it
-          break;
-        }
-        // Skip over literals
-        deletePosition--;
-      }
-
-      // If we found a valid position to delete
-      if (deletePosition >= 0) {
-        // Get the unmasked value
-        const unmaskedValue = this.unmaskValue(currentValue);
-
-        // Count how many data characters are up to and including the delete position
-        let dataCharsUpToDelete = 0;
-        for (let i = 0; i <= deletePosition && i < this.mask.length; i++) {
-          const maskChar = this.mask[i];
-          if (!this.isLiteral(maskChar)) {
-            dataCharsUpToDelete++;
-          }
-        }
-
-        // Remove the character at position (dataCharsUpToDelete - 1) from the unmasked value
-        const deleteIndex = dataCharsUpToDelete - 1;
-        const newUnmasked = unmaskedValue.substring(0, deleteIndex) + unmaskedValue.substring(deleteIndex + 1);
-
-        // Reapply the mask
-        const newMasked = this.applyMask(newUnmasked);
-        this.value = newMasked;
-        input.value = newMasked;
-
-        // Calculate new cursor position (position after deleteIndex data characters)
-        let newCursorPos = 0;
-        let dataCharCount = 0;
-        const targetDataChars = deleteIndex;
-
-        for (let i = 0; i < newMasked.length && i < this.mask.length; i++) {
-          const maskChar = this.mask[i];
-          if (!this.isLiteral(maskChar)) {
-            if (dataCharCount >= targetDataChars) {
-              break;
-            }
-            dataCharCount++;
-          }
-          newCursorPos = i + 1;
-        }
+        this.value = result.newValue;
+        input.value = result.newValue;
 
         // Position cursor (only if setSelectionRange is available - not in mock DOM)
         if (typeof input.setSelectionRange === 'function') {
-          input.setSelectionRange(newCursorPos, newCursorPos);
+          input.setSelectionRange(result.newCursor, result.newCursor);
         }
 
         // Emit input event
-        const unmaskedResult = this.unmaskValue(newMasked);
+        const unmaskedResult = MaskUtils.unmaskValue(result.newValue, this.mask);
         this.monoInput.emit({
-          value: this.unmask ? unmaskedResult : newMasked,
-          maskedValue: newMasked,
+          value: this.unmask ? unmaskedResult : result.newValue,
+          maskedValue: result.newValue,
           name: this.name,
         });
       }
@@ -545,7 +337,7 @@ export class MonoTextField {
    */
   private getPlaceholder(): string | undefined {
     if (this.showMask && this.mask && !this.alwaysShowMask) {
-      return this.mask.replace(/[9A*]/g, '_');
+      return MaskUtils.maskToPlaceholder(this.mask);
     }
     return this.placeholder;
   }
@@ -553,7 +345,7 @@ export class MonoTextField {
   componentWillLoad() {
     // Initialize masked value if mask is provided
     if (this.mask && this.value) {
-      const masked = this.applyMask(this.value);
+      const masked = MaskUtils.applyMask(this.value, this.mask, this.alwaysShowMask);
       this.value = masked;
     }
   }
